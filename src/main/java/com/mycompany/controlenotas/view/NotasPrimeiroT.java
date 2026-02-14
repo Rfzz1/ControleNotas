@@ -3,11 +3,14 @@ package com.mycompany.controlenotas.view;
 import com.mycompany.controlenotas.RegistroTarPT;
 import com.mycompany.controlenotas.Tarefa;
 import com.mycompany.controlenotas.db;
+import com.mycompany.controlenotas.http.ApiClient;
 import com.mycompany.controlenotas.util.Sessao;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -102,46 +105,41 @@ public class NotasPrimeiroT extends JFrame {
     // -------------------------------------------
     
 private void SomarNotas() {
-    listaTarefas.clear();
-    modelo.setRowCount(0);
+    try {
+        modelo.setRowCount(0);
 
-    String sql = """
-        SELECT m.id AS materia_id,
-               m.materia,
-               COALESCE(SUM(a.nota), 0) AS soma
-        FROM materias m
-        LEFT JOIN avaliacoes a 
-               ON a.materia_id = m.id
-              AND a.trimestre = 1
-              AND a.aluno_id = ?
-        GROUP BY m.id, m.materia
-        ORDER BY m.materia
-    """;
+        String json = ApiClient.get(
+                "/avaliacoes/aluno/" + idAluno + "/trimestre/1"
+        );
 
-    try (Connection conn = db.conectar();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        AvaliacaoResponseDTO[] avaliacoes =
+                ApiClient.getGson().fromJson(json, AvaliacaoResponseDTO[].class);
 
-        stmt.setLong(1, idAluno);
-        var rs = stmt.executeQuery();
+        Map<Long, Double> somaPorMateria = new HashMap<>();
 
-        while (rs.next()) {
-            int materiaId = rs.getInt("materia_id");
-            String materia = rs.getString("materia");
-            double soma = rs.getDouble("soma");
+        for (AvaliacaoResponseDTO a : avaliacoes) {
+            somaPorMateria.merge(
+                    a.getMateriaId(),
+                    a.getNota(),
+                    Double::sum
+            );
+        }
 
+        for (Map.Entry<Long, Double> entry : somaPorMateria.entrySet()) {
             modelo.addRow(new Object[]{
-                materiaId,
-                materia,
-                soma
+                entry.getKey(),
+                "Matéria " + entry.getKey(),
+                entry.getValue()
             });
         }
 
     } catch (Exception ex) {
         JOptionPane.showMessageDialog(this,
-            "Erro ao carregar notas:\n" + ex.getMessage());
-        Logger.getLogger(NotasPrimeiroT.class.getName()).log(Level.SEVERE, null, ex);
+                "Erro ao carregar notas:\n" + ex.getMessage());
+        ex.printStackTrace();
     }
 }
+
 
 
     
