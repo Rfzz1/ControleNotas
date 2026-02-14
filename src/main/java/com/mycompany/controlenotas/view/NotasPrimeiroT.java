@@ -4,6 +4,7 @@ import com.mycompany.controlenotas.RegistroTarPT;
 import com.mycompany.controlenotas.Tarefa;
 import com.mycompany.controlenotas.db;
 import com.mycompany.controlenotas.http.ApiClient;
+import com.mycompany.controlenotas.model.AvaliacaoResponseDTO;
 import com.mycompany.controlenotas.util.Sessao;
 import java.awt.*;
 import java.sql.Connection;
