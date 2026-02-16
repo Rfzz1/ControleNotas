@@ -3,12 +3,16 @@ package com.mycompany.controlenotas.view;
 import com.mycompany.controlenotas.RegistroTarST;
 import com.mycompany.controlenotas.Tarefa;
 import com.mycompany.controlenotas.db;
+import com.mycompany.controlenotas.http.ApiClient;
+import com.mycompany.controlenotas.model.AvaliacaoResponseDTO;
 import com.mycompany.controlenotas.util.Sessao;
 import com.mycompany.controlenotas.view.NotasPrimeiroT;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -88,7 +92,7 @@ public class NotasSegundoT extends JFrame {
 
         add(new JScrollPane(tabela), BorderLayout.CENTER);
         
-        SomarNotas();
+        somarNotas();
         setVisible(true); 
         
     }
@@ -101,47 +105,52 @@ public class NotasSegundoT extends JFrame {
     // SomarNotas
     // -------------------------------------------
     
-private void SomarNotas() {
-    listaTarefas.clear();
-    modelo.setRowCount(0);
+private void somarNotas() {
+    try {
+        modelo.setRowCount(0);
 
-    String sql = """
-        SELECT m.id AS materia_id,
-               m.materia,
-               COALESCE(SUM(a.nota), 0) AS soma
-        FROM materias m
-        LEFT JOIN avaliacoes a 
-               ON a.materia_id = m.id
-              AND a.trimestre = 2
-              AND a.aluno_id = ?
-        GROUP BY m.id, m.materia
-        ORDER BY m.materia
-    """;
+        String json = ApiClient.get(
+                "/avaliacoes/aluno/" + idAluno + "/trimestre/2"
+        );
+        
+        if (json == null || json.isEmpty()) {
+            return;
+        }
 
-    try (Connection conn = db.conectar();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        AvaliacaoResponseDTO[] avaliacoes =
+                ApiClient.getGson().fromJson(json, AvaliacaoResponseDTO[].class);
+        
+        if (avaliacoes == null || avaliacoes.length == 0) {
+            return;
+        }
 
-        stmt.setLong(1, idAluno);
-        var rs = stmt.executeQuery();
+        Map<Long, Double> somaPorMateria = new HashMap<>();
 
-        while (rs.next()) {
-            int materiaId = rs.getInt("materia_id");
-            String materia = rs.getString("materia");
-            double soma = rs.getDouble("soma");
+        for (AvaliacaoResponseDTO a : avaliacoes) {
+            if (a.getNota() == null)
+                continue;
+            somaPorMateria.merge(
+                    a.getMateriaId(),
+                    a.getNota(),
+                    Double::sum
+            );
+        }
 
+        for (AvaliacaoResponseDTO a: avaliacoes) {
             modelo.addRow(new Object[]{
-                materiaId,
-                materia,
-                soma
+                a.getMateriaId(),
+                a.getMateriaNome(),
+                a.getNota()
             });
         }
 
     } catch (Exception ex) {
         JOptionPane.showMessageDialog(this,
-            "Erro ao carregar notas:\n" + ex.getMessage());
-        Logger.getLogger(NotasPrimeiroT.class.getName()).log(Level.SEVERE, null, ex);
+                "Erro ao carregar notas:\n" + ex.getMessage());
+        ex.printStackTrace();
     }
 }
+
 
 
     

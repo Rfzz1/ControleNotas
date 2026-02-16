@@ -9,6 +9,7 @@ com\mycompany\controlenotas\view\SegundoTri.class
 com\mycompany\controlenotas\http\TypeTokenProvider$1.class
 com\mycompany\controlenotas\service\MateriaService.class
 com\mycompany\controlenotas\view\TerceiroTri.class
+com\mycompany\controlenotas\model\AvaliacaoResponseDTO.class
 com\mycompany\controlenotas\view\NotasPrimeiroT$1.class
 com\mycompany\controlenotas\http\ApiClient.class
 com\mycompany\controlenotas\model\TipoAvaliacaoDTO.class

@@ -92,7 +92,7 @@ public class NotasPrimeiroT extends JFrame {
 
         add(new JScrollPane(tabela), BorderLayout.CENTER);
         
-        SomarNotas();
+        somarNotas();
         setVisible(true); 
         
     }
@@ -105,20 +105,31 @@ public class NotasPrimeiroT extends JFrame {
     // SomarNotas
     // -------------------------------------------
     
-private void SomarNotas() {
+private void somarNotas() {
     try {
         modelo.setRowCount(0);
 
         String json = ApiClient.get(
                 "/avaliacoes/aluno/" + idAluno + "/trimestre/1"
         );
+        
+        if (json == null || json.isEmpty()) {
+            return;
+        }
 
         AvaliacaoResponseDTO[] avaliacoes =
                 ApiClient.getGson().fromJson(json, AvaliacaoResponseDTO[].class);
+        
+        if (avaliacoes == null || avaliacoes.length == 0) {
+            return;
+        }
+
 
         Map<Long, Double> somaPorMateria = new HashMap<>();
 
         for (AvaliacaoResponseDTO a : avaliacoes) {
+            if (a.getNota() == null)
+                continue;
             somaPorMateria.merge(
                     a.getMateriaId(),
                     a.getNota(),
@@ -126,11 +137,11 @@ private void SomarNotas() {
             );
         }
 
-        for (Map.Entry<Long, Double> entry : somaPorMateria.entrySet()) {
+        for (AvaliacaoResponseDTO a: avaliacoes) {
             modelo.addRow(new Object[]{
-                entry.getKey(),
-                "Matéria " + entry.getKey(),
-                entry.getValue()
+                a.getMateriaId(),
+                a.getMateriaNome(),
+                a.getNota()
             });
         }
 
