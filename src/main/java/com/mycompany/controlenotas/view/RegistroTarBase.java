@@ -3,7 +3,7 @@ package com.mycompany.controlenotas.view;
 import com.mycompany.controlenotas.Tarefa;
 import com.mycompany.controlenotas.db;
 import com.mycompany.controlenotas.http.ApiClient;
-import com.mycompany.controlenotas.model.AvaliacaoDTO;
+import com.mycompany.controlenotas.model.AvaliacaoResponseDTO;
 import com.mycompany.controlenotas.util.Sessao;
 import com.mycompany.controlenotas.view.RegistroTarefaDialog;
 import java.awt.BorderLayout;
@@ -20,11 +20,11 @@ public abstract class RegistroTarBase extends JFrame {
 
     protected JTable tabela;
     protected DefaultTableModel modelo;
-    protected java.util.List<AvaliacaoDTO> listaTarefas = new ArrayList<>();
+    protected java.util.List<AvaliacaoResponseDTO> listaTarefas = new ArrayList<>();
 
     protected RegistroTarBase(Long idAluno, int trimestre, String tituloJanela) {
         super(tituloJanela);
-        this.idAluno = Sessao.getAlunoId();
+        this.idAluno = idAluno;
         this.trimestre = trimestre;
 
         setSize(900, 600);
@@ -49,6 +49,7 @@ public abstract class RegistroTarBase extends JFrame {
 
         topo.add(adicionar);
         topo.add(editar);
+        topo.add(voltar);
 
         adicionar.addActionListener(e -> {
             new RegistroTarefaDialog(this, trimestre).setVisible(true);
@@ -91,25 +92,27 @@ public abstract class RegistroTarBase extends JFrame {
         try {
 
             String json = ApiClient.get("/avaliacoes/aluno/" 
-                            + idAluno + "?trimestre" + trimestre);
+                            + idAluno + "/trimestre/" + trimestre);
 
-            AvaliacaoDTO[] avaliacoes =
-                    ApiClient.getGson().fromJson(json, AvaliacaoDTO[].class);
+            AvaliacaoResponseDTO[] avaliacoes =
+                    ApiClient.getGson().fromJson(json, AvaliacaoResponseDTO[].class);
 
-            for (AvaliacaoDTO a : avaliacoes) {
+            for (AvaliacaoResponseDTO a : avaliacoes) {
 
                 listaTarefas.add(a);
 
                 modelo.addRow(new Object[]{
                     a.getId(),
-                    a.getMateria(),
-                    a.getTipo(),
+                    a.getMateriaNome(),
+                    a.getTipoNome(),
                     a.getTitulo(),
                     a.getDescricao(),
                     a.getValorMax(),
                     a.getNota(),
                     a.getData()
                 });
+                System.out.println("JSON RECEBIDO:");
+                System.out.println(json);
             }
 
         } catch (Exception e) {
@@ -128,7 +131,7 @@ public abstract class RegistroTarBase extends JFrame {
 
         Long id = (Long) tabela.getValueAt(row, 0);
 
-        AvaliacaoDTO tarefa = listaTarefas.stream()
+        AvaliacaoResponseDTO tarefa = listaTarefas.stream()
                 .filter(t -> t.getId().equals(id))
                 .findFirst()
                 .orElse(null);

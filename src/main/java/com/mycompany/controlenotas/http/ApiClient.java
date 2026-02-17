@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.util.Map;
 
 public class ApiClient {
-
     private static final String BASE_URL = "https://controle-notas-api-production.up.railway.app";
     public static final HttpClient client = HttpClient.newHttpClient();
     private static final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();

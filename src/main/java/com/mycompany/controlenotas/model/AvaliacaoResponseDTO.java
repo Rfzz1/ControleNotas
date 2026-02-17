@@ -21,6 +21,7 @@ public class AvaliacaoResponseDTO {
     private String titulo;
     private String descricao;
     private String materiaNome;
+    private String tipoNome;
 
     private String data; // no Swing melhor String
     private Integer trimestre;
@@ -114,5 +115,14 @@ public class AvaliacaoResponseDTO {
     public void setTrimestre(Integer trimestre) {
         this.trimestre = trimestre;
     }
+    
+    public String getTipoNome() {
+        return tipoNome;
+    }
+
+    public void setTipoNome(String tipoNome) {
+        this.tipoNome = tipoNome;
+    }
+    
 }
 

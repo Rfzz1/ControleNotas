@@ -1,7 +1,7 @@
 package com.mycompany.controlenotas;
 
 import com.mycompany.controlenotas.http.ApiClient;
-import com.mycompany.controlenotas.model.AvaliacaoDTO;
+import com.mycompany.controlenotas.model.AvaliacaoResponseDTO;
 import com.mycompany.controlenotas.service.AvaliacaoService;
 import com.mycompany.controlenotas.util.Sessao;
 import com.mycompany.controlenotas.view.*;
@@ -19,7 +19,7 @@ public class RegistroTarefasView extends JFrame {
 
     private JTable tabela;
     private DefaultTableModel modelo;
-    private final List<AvaliacaoDTO> listaTarefas = new ArrayList<>();
+    private final List<AvaliacaoResponseDTO> listaTarefas = new ArrayList<>();
 
     public RegistroTarefasView(int trimestre) {
         super("Registro de Tarefas - " + trimestre + "º Trimestre");
@@ -98,16 +98,16 @@ public class RegistroTarefasView extends JFrame {
                     "/avaliacoes/aluno/" + idAluno + "?trimestre=" + trimestre
             );
 
-            AvaliacaoDTO[] tarefas =
-                    ApiClient.getGson().fromJson(json, AvaliacaoDTO[].class);
+            AvaliacaoResponseDTO[] tarefas =
+                    ApiClient.getGson().fromJson(json, AvaliacaoResponseDTO[].class);
 
-            for (AvaliacaoDTO dto : tarefas) {
+            for (AvaliacaoResponseDTO dto : tarefas) {
                 listaTarefas.add(dto);
 
                 modelo.addRow(new Object[]{
                         dto.getId(),
-                        dto.getMateria(),
-                        dto.getTipo(),
+                        dto.getMateriaNome(),
+                        dto.getTipoNome(),
                         dto.getTitulo(),
                         dto.getDescricao(),
                         dto.getValorMax(),

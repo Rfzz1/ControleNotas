@@ -2,7 +2,7 @@ package com.mycompany.controlenotas.view;
 
 import com.google.gson.Gson;
 import com.mycompany.controlenotas.http.ApiClient;
-import com.mycompany.controlenotas.model.AvaliacaoDTO;
+import com.mycompany.controlenotas.model.AvaliacaoResponseDTO;
 import com.mycompany.controlenotas.model.MateriaDTO;
 import com.mycompany.controlenotas.model.TipoDTO;
 import com.mycompany.controlenotas.util.Sessao;
@@ -31,9 +31,9 @@ public class EditarTarefaDialog extends JDialog {
     private final JComboBox<MateriaDTO> selectMateria;
     private final JComboBox<TipoDTO> selectTipo;
 
-    private AvaliacaoDTO tarefa;
+    private AvaliacaoResponseDTO tarefa;
 
-    public EditarTarefaDialog(Window parent, AvaliacaoDTO tarefa) {
+    public EditarTarefaDialog(Window parent, AvaliacaoResponseDTO tarefa) {
         super(parent, "Editar Tarefa", ModalityType.APPLICATION_MODAL);
 
         this.tarefa = tarefa;
@@ -59,10 +59,20 @@ public class EditarTarefaDialog extends JDialog {
         inputNota = new JTextField(String.valueOf(tarefa.getNota()));
 
         // selecionar matéria da tarefa
-        selectMateria.setSelectedItem(tarefa.getMateria());
+        for (int i = 0; i < selectMateria.getItemCount(); i++) {
+            if (selectMateria.getItemAt(i).getId().equals(tarefa.getMateriaId())) {
+                selectMateria.setSelectedIndex(i);
+                break;
+            }
+        }
 
         // selecionar tipo da tarefa
-        selectTipo.setSelectedItem(tarefa.getTipo());
+        for (int i = 0; i < selectTipo.getItemCount(); i++) {
+            if (selectTipo.getItemAt(i).getId().equals(tarefa.getTipoId())) {
+                selectTipo.setSelectedIndex(i);
+                break;
+            }
+        }
 
         // ADICIONA NO FORM
         form.add(new JLabel("Matéria:"));

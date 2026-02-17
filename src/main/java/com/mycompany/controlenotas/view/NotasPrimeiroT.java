@@ -5,6 +5,7 @@ import com.mycompany.controlenotas.Tarefa;
 import com.mycompany.controlenotas.db;
 import com.mycompany.controlenotas.http.ApiClient;
 import com.mycompany.controlenotas.model.AvaliacaoResponseDTO;
+import com.mycompany.controlenotas.model.NotaFinalDTO;
 import com.mycompany.controlenotas.util.Sessao;
 import java.awt.*;
 import java.sql.Connection;
@@ -106,52 +107,30 @@ public class NotasPrimeiroT extends JFrame {
     // -------------------------------------------
     
 private void somarNotas() {
+
     try {
         modelo.setRowCount(0);
 
         String json = ApiClient.get(
-                "/avaliacoes/aluno/" + idAluno + "/trimestre/1"
+                "/avaliacoes/boletim-trimestre/" + idAluno + "?trimestre=1"
         );
-        
-        if (json == null || json.isEmpty()) {
-            return;
-        }
 
-        AvaliacaoResponseDTO[] avaliacoes =
-                ApiClient.getGson().fromJson(json, AvaliacaoResponseDTO[].class);
-        
-        if (avaliacoes == null || avaliacoes.length == 0) {
-            return;
-        }
+        NotaFinalDTO[] notas =
+                ApiClient.getGson().fromJson(json, NotaFinalDTO[].class);
 
-
-        Map<Long, Double> somaPorMateria = new HashMap<>();
-
-        for (AvaliacaoResponseDTO a : avaliacoes) {
-            if (a.getNota() == null)
-                continue;
-            somaPorMateria.merge(
-                    a.getMateriaId(),
-                    a.getNota(),
-                    Double::sum
-            );
-        }
-
-        for (AvaliacaoResponseDTO a: avaliacoes) {
+        for (NotaFinalDTO n : notas) {
             modelo.addRow(new Object[]{
-                a.getMateriaId(),
-                a.getMateriaNome(),
-                a.getNota()
+                n.getMateriaId(),
+                n.getMateria(),
+                n.getSoma()
             });
         }
 
-    } catch (Exception ex) {
+    } catch (Exception e) {
         JOptionPane.showMessageDialog(this,
-                "Erro ao carregar notas:\n" + ex.getMessage());
-        ex.printStackTrace();
+                "Erro ao carregar notas:\n" + e.getMessage());
     }
 }
-
 
 
     
