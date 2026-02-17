@@ -4,6 +4,7 @@ import com.mycompany.controlenotas.Tarefa;
 import com.mycompany.controlenotas.db;
 import com.mycompany.controlenotas.http.ApiClient;
 import com.mycompany.controlenotas.model.AvaliacaoResponseDTO;
+import com.mycompany.controlenotas.service.AvaliacaoService;
 import com.mycompany.controlenotas.util.Sessao;
 import com.mycompany.controlenotas.view.RegistroTarefaDialog;
 import java.awt.BorderLayout;
@@ -45,10 +46,12 @@ public abstract class RegistroTarBase extends JFrame {
 
         JButton adicionar = new JButton("+");
         JButton editar = new JButton("Editar");
+        JButton excluir = new JButton("Excluir");
         JButton voltar = new JButton("Voltar");
 
         topo.add(adicionar);
         topo.add(editar);
+        topo.add(excluir);
         topo.add(voltar);
 
         adicionar.addActionListener(e -> {
@@ -57,6 +60,7 @@ public abstract class RegistroTarBase extends JFrame {
         });
 
         editar.addActionListener(e -> editarTarefa());
+        excluir.addActionListener(e -> excluirTarefa());
         voltar.addActionListener(e -> voltar());
 
         add(topo, BorderLayout.NORTH);
@@ -140,6 +144,34 @@ public abstract class RegistroTarBase extends JFrame {
 
         new EditarTarefaDialog(this, tarefa).setVisible(true);
         listarTarefas();
+    }
+    
+        private void excluirTarefa() {
+        int row = tabela.getSelectedRow();
+        if (row == -1) return;
+
+        Long id = (Long) tabela.getValueAt(row, 0);
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Deseja excluir a tarefa?",
+                "Confirmação",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        try {
+            AvaliacaoService service = new AvaliacaoService();
+            service.deletar((long) id);
+            listarTarefas();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Erro ao excluir tarefa:\n" + e.getMessage()
+            );
+        }
     }
 
     // ---------- VOLTAR (cada TRI define) ----------
