@@ -1,7 +1,5 @@
-=========================================
-			CONTROLE DE NOTAS			
-				Versão 1.0
-=========================================
+# CONTROLE DE NOTAS			
+	Versão 1.0
 
 Obrigado por utilizar esse sistema! Foi feito com muito carinho pensando em todos os usuários!
 Essa é a primeira versão, no futuro serçao lançadas atualizações de interface e novas funcionalidades como controle de faltas!
