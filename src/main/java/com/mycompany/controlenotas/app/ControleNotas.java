@@ -60,6 +60,7 @@ public class ControleNotas extends JFrame {
         entrar.addActionListener(e -> {
             String aluno = campoNome.getText().trim();
             String senha = new String(campoSenha.getPassword());
+            System.out.println("Botão Clicado");
             
 
             if (aluno.isEmpty() || senha.isEmpty()) {
@@ -68,12 +69,14 @@ public class ControleNotas extends JFrame {
             }
 
             try {
+                System.out.println("Enviando Requisição");
                 AlunoDTO alunoLogado = AuthService.login(aluno, senha);
 
                 Sessao.login(alunoLogado.getId(), alunoLogado.getAluno());
 
                 new Trimestres().setVisible(true);
                 dispose();
+                System.out.println("Recebeu Resposta");
 
             } catch (ApiException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
