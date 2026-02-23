@@ -2,7 +2,7 @@
 	Versão 1.0
 
 Obrigado por utilizar esse sistema! Foi feito com muito carinho pensando em todos os usuários!
-Essa é a primeira versão, no futuro serçao lançadas atualizações de interface e novas funcionalidades como controle de faltas!
+Essa é a primeira versão, no futuro serão lançadas atualizações de interface e novas funcionalidades como controle de faltas!
 Espero que possamos nos encontrar em Breve :)
 
 Este aplicativo permite gerenciar:
@@ -30,7 +30,7 @@ Em casos como esse, apenas deem ok na mensagem e tentem realizar a ação que es
 OBS: Pode aparecer algum aviso de Origem desconhecida ou "Windows protegeu seu computador" mas asseguro que o programa é livre de vírus e foi desenvolvido 100% por mim.
 Como ele não é um arquivo assinado digitalmente no qual o custo é de 800 reais por ano. É um executável novo e não tem reputação com a Microsoft podem aparecer certos avisos, 
 mas isso é normal para desenvolvedores independentes.
-Caso isso acontece, clique em "mais informações" e depois "Executar"
+Caso isso aconteça, clique em "mais informações" e depois "Executar"
 
 Desenvolvido por: Rafael Bressan Fiorio
 Ano: 2025-2026
