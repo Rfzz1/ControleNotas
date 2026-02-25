@@ -33,4 +33,5 @@ mas isso é normal para desenvolvedores independentes.
 Caso isso aconteça, clique em "mais informações" e depois "Executar"
 
 Desenvolvido por: Rafael Bressan Fiorio
+<br>
 Ano: 2025-2026
